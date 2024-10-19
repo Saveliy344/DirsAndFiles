@@ -13,11 +13,19 @@ function makeDialogVisible(){
 function closeDialog() {
     const dialog = document.getElementById("filesModal");
     dialog.style.display = 'none';
+    clearTable("filesTable");
 }
 
 
 function addFileToTable(file){
-    const table = document.getElementById();
+    const table = document.getElementById("filesTable").getElementsByTagName("tbody")[0];
+    const newRow = table.insertRow();
+    
+    const nameCell = newRow.insertCell(0);
+    nameCell.textContent = file.name;
+    
+    const sizeCell = newRow.insertCell(1);
+    sizeCell.textContent = file.size;
 }
 
 function addDirectoryToTable(directory) {
@@ -55,6 +63,21 @@ function addDirectoryToTable(directory) {
     filesButton.id = "files-btn " + directory.id;
     filesButton.addEventListener("click", function(){
         makeDialogVisible();
+        fetch("http://localhost:8080/daf/filesAndDirs/" + directory.id)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            data.forEach(file => {
+                addFileToTable(file);
+            });
+        })
+        .catch(error => {
+            console.error('Ошибка при загрузке файлов:', error);
+        });
     });
     actionsCell.appendChild(filesButton);
 }
