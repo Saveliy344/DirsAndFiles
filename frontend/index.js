@@ -16,6 +16,21 @@ function closeDialog() {
     clearTable("filesTable");
 }
 
+//Получить размер с точностью от 0 до 1023 Байт, КБайт, МБайт и т.д.
+function getStringSize(size) {
+    const prefixes = ["Б", "КБ", "МБ", "ГБ", "ТБ", "ПБ"];
+
+    let thousandsDegree = 0;
+
+    while (size >= 1024 && thousandsDegree < prefixes.length - 1) {
+        size /= 1024;
+        thousandsDegree++;
+    }
+
+    size = size.toFixed(2);
+
+    return `${size} ${prefixes[thousandsDegree]}`;
+}
 
 function addFileToTable(file){
     const table = document.getElementById("filesTable").getElementsByTagName("tbody")[0];
@@ -25,7 +40,10 @@ function addFileToTable(file){
     nameCell.textContent = file.name;
     
     const sizeCell = newRow.insertCell(1);
-    sizeCell.textContent = file.size;
+    if (file.isDir)
+        sizeCell.textContent = "<DIR>";
+    else
+        sizeCell.textContent = getStringSize(file.size);
 }
 
 function addDirectoryToTable(directory) {
@@ -53,8 +71,7 @@ function addDirectoryToTable(directory) {
     filesCountCell.textContent = directory.filesCount;
 
     const sizeCell = newRow.insertCell(4);
-    const sizeInMB = (directory.filesSize / 1024).toFixed(2);
-    sizeCell.textContent = `${sizeInMB} MB`;
+    sizeCell.textContent =  getStringSize(directory.filesSize);
 
     const actionsCell = newRow.insertCell(5);
     const filesButton = document.createElement("button");

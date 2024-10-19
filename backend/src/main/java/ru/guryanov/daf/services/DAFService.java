@@ -1,7 +1,6 @@
 package ru.guryanov.daf.services;
 
 import jakarta.transaction.Transactional;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.guryanov.daf.models.HeaderFile;
@@ -57,7 +56,7 @@ public class DAFService {
             savedDirectory.setName(directoryName);
             for (HeaderFile headerFile : headerFiles) {
                 //Если это директория, то её размер равен нулю
-                if (headerFile.getSize() == 0) dirsCount++;
+                if (headerFile.getIsDir()) dirsCount++;
                 else filesCount++;
                 sumFilesSize += headerFile.getSize();
                 headerFile.setSavedDirectory(savedDirectory);

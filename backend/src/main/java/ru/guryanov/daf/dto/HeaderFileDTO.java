@@ -6,6 +6,7 @@ public class HeaderFileDTO {
     private Long id;
     private String name;
     private long size;
+    private boolean isDir;
 
     public Long getId() {
         return id;
@@ -29,5 +30,13 @@ public class HeaderFileDTO {
 
     public void setSize(long size) {
         this.size = size;
+    }
+
+    public boolean getIsDir() {
+        return isDir;
+    }
+
+    public void setIsDir(boolean isDir) {
+        this.isDir = isDir;
     }
 }

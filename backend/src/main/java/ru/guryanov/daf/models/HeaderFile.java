@@ -19,6 +19,8 @@ public class HeaderFile {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dir_id", nullable = false)
     private SavedDirectory savedDirectory;
+    @Column(name = "is_dir")
+    private boolean isDir;
 
     public Long getId() {
         return id;
@@ -58,5 +60,13 @@ public class HeaderFile {
                 "size=" + size +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public boolean getIsDir() {
+        return isDir;
+    }
+
+    public void setIsDir(boolean isDir) {
+        this.isDir = isDir;
     }
 }

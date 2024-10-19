@@ -14,6 +14,7 @@ public class HeaderFileMapper implements Mapper<HeaderFile, HeaderFileDTO>{
         dto.setName(h.getName());
         dto.setSize(h.getSize());
         dto.setId(h.getId());
+        dto.setIsDir(h.getIsDir());
         return dto;
     }
 
@@ -23,6 +24,7 @@ public class HeaderFileMapper implements Mapper<HeaderFile, HeaderFileDTO>{
         h.setName(dto.getName());
         h.setSize(dto.getSize());
         h.setId(dto.getId());
+        h.setIsDir(dto.getIsDir());
         return h;
     }
 }

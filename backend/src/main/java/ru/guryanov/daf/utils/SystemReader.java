@@ -15,7 +15,6 @@ public class SystemReader {
 
         if (directory.exists() && directory.isDirectory()) {
             traverseDirectory(directory, files);
-            System.out.println(files);
         } else throw new RuntimeException("Not found");
 
         return files;
@@ -32,6 +31,7 @@ public class SystemReader {
                 if (file.isDirectory()) {
                     // Если это директория, размер = 0
                     headerFile.setSize(0);
+                    headerFile.setIsDir(true);
                     files.add(headerFile);
                 } else {
                     headerFile.setSize(file.length());  // Если это файл, заполняем его размер
