@@ -5,7 +5,7 @@ import ru.guryanov.daf.models.SavedDirectory;
 public class HeaderFileDTO {
     private Long id;
     private String name;
-    private Double size;
+    private long size;
 
     public Long getId() {
         return id;
@@ -23,11 +23,11 @@ public class HeaderFileDTO {
         this.name = name;
     }
 
-    public Double getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(Double size) {
+    public void setSize(long size) {
         this.size = size;
     }
 }

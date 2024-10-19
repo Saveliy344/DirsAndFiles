@@ -14,7 +14,7 @@ public class HeaderFile {
     private String name;
 
     @Column(name = "size")
-    private Double size;
+    private long size;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dir_id", nullable = false)
@@ -36,11 +36,11 @@ public class HeaderFile {
         this.name = name;
     }
 
-    public Double getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(Double size) {
+    public void setSize(long size) {
         this.size = size;
     }
 

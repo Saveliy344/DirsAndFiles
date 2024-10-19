@@ -11,7 +11,7 @@ public class SavedDirectoryDTO {
     private int filesCount;
     private LocalDateTime dateOfAdd;
     private int dirsCount;
-    private int filesSize;
+    private long filesSize;
 
     public Long getId() {
         return id;
@@ -46,11 +46,11 @@ public class SavedDirectoryDTO {
     }
 
 
-    public int getFilesSize() {
+    public long getFilesSize() {
         return filesSize;
     }
 
-    public void setFilesSize(int filesSize) {
+    public void setFilesSize(long filesSize) {
         this.filesSize = filesSize;
     }
 

@@ -16,9 +16,7 @@ public class SystemReader {
         if (directory.exists() && directory.isDirectory()) {
             traverseDirectory(directory, files);
             System.out.println(files);
-        } else {
-            System.out.println("Директория не существует или не является директорией");
-        }
+        } else throw new RuntimeException("Not found");
 
         return files;
     }
@@ -32,10 +30,11 @@ public class SystemReader {
                 headerFile.setName(file.getName());
 
                 if (file.isDirectory()) {
-                    headerFile.setSize(-1.0);  // Если это директория, размер = -1
+                    // Если это директория, размер = 0
+                    headerFile.setSize(0);
                     files.add(headerFile);
                 } else {
-                    headerFile.setSize((double) file.length());  // Если это файл, заполняем его размер
+                    headerFile.setSize(file.length());  // Если это файл, заполняем его размер
                     files.add(headerFile);
                 }
             }

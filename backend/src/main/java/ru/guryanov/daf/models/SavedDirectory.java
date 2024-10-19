@@ -27,7 +27,7 @@ public class SavedDirectory {
     private int dirsCount = 0;
 
     @Column(name = "files_size", nullable = false)
-    private int filesSize = 0;
+    private long filesSize = 0;
 
     @OneToMany(mappedBy = "savedDirectory", cascade = CascadeType.ALL)
     private List<HeaderFile> headerFiles = new ArrayList<>();
@@ -65,11 +65,11 @@ public class SavedDirectory {
         this.dateOfAdd = dateOfAdd;
     }
 
-    public int getFilesSize() {
+    public long getFilesSize() {
         return filesSize;
     }
 
-    public void setFilesSize(int filesSize) {
+    public void setFilesSize(long filesSize) {
         this.filesSize = filesSize;
     }
 
@@ -87,5 +87,9 @@ public class SavedDirectory {
 
     public void setDirsCount(int dirsCount) {
         this.dirsCount = dirsCount;
+    }
+
+    public void addHeaderFile(HeaderFile headerFile){
+        getHeaderFiles().add(headerFile);
     }
 }
