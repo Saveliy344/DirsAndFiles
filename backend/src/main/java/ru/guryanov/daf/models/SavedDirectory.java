@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "SavedDirectory")
+@Table(name = "saved_directory")
 public class SavedDirectory {
 
     @Id

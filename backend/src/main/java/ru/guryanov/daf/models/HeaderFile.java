@@ -3,7 +3,7 @@ package ru.guryanov.daf.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "HeaderFile")
+@Table(name = "header_file")
 
 public class HeaderFile {
     @Id
@@ -50,5 +50,13 @@ public class HeaderFile {
 
     public void setSavedDirectory(SavedDirectory savedDirectory) {
         this.savedDirectory = savedDirectory;
+    }
+
+    @Override
+    public String toString() {
+        return "HeaderFile{" +
+                "size=" + size +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
