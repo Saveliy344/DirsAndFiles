@@ -5,7 +5,7 @@ CREATE TABLE SavedDirectory (
     name VARCHAR(255) NOT NULL,
     files_count INT DEFAULT 0,
     date_of_add TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    dirs INT DEFAULT 0,
+    dirs_count INT DEFAULT 0,
     files_size INT DEFAULT 0
 );
 
