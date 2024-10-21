@@ -1,8 +1,9 @@
 package ru.guryanov.daf.services;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import ru.guryanov.daf.models.HeaderFile;
 import ru.guryanov.daf.models.SavedDirectory;
 import ru.guryanov.daf.repositories.SavedDirectoryRepository;
@@ -24,8 +25,11 @@ public class DAFService {
         this.systemReader = systemReader;
     }
 
-    public List<SavedDirectory> getAllSavedDirectories() {
-        return savedDirectoryRepository.findAll();
+    public List<SavedDirectory> getAllSavedDirectories(boolean orderByDateASC) {
+        if (orderByDateASC)
+            return savedDirectoryRepository.findAllByOrderByDateOfAddAsc();
+        else
+            return savedDirectoryRepository.findAllByOrderByDateOfAddDesc();
     }
 
     private void deleteDirectory(SavedDirectory savedDirectory) {
@@ -42,6 +46,7 @@ public class DAFService {
 
 
     //Если успешно добавилась, вернётся true, иначе - false
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public boolean addDirectory(String directoryName) {
         try {
             //Если в таблице уже есть директория, то удаляем, все связанные записи удалятся автоматически из-за каскадирования

@@ -99,8 +99,12 @@ function addDirectoryToTable(directory) {
     actionsCell.appendChild(filesButton);
 }
 
-function loadDirectories() {
-    fetch("http://localhost:8080/daf/directories")
+function loadDirectories(asc = false) {
+    clearTable("directoriesTable");
+    // Определяем URL для запроса в зависимости от значения параметра asc
+        const url = asc ? "http://localhost:8080/daf/directories/asc" : "http://localhost:8080/daf/directories";
+
+    fetch(url)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -117,7 +121,9 @@ function loadDirectories() {
         });
 }
 
-window.onload = loadDirectories;
+window.onload = function(){
+    loadDirectories(false);
+};
 
 document.getElementById("addBtn").addEventListener("click", function() {
     const directoryName = document.getElementById("directory").value;
@@ -134,7 +140,6 @@ document.getElementById("addBtn").addEventListener("click", function() {
         })
         .then(response => {
             if (response.ok) {
-                clearTable("directoriesTable");
                 loadDirectories();
                 document.getElementById("directory").value = "";
             } else {
@@ -153,3 +158,16 @@ document.getElementById("addBtn").addEventListener("click", function() {
 document.getElementById("close").addEventListener("click", function(){
     closeDialog();
 });
+
+
+document.getElementById("sort").addEventListener("click", function(){
+    const sortArrow = document.getElementById('sort');
+
+        if (sortArrow.innerHTML === '▲') {
+            sortArrow.innerHTML = '▼';
+            loadDirectories(false);
+        } else {
+            sortArrow.innerHTML = '▲';
+            loadDirectories(true);
+        }
+})

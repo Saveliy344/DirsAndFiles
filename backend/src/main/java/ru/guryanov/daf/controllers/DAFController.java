@@ -28,7 +28,12 @@ public class DAFController {
 
     @GetMapping("/directories")
     public List<SavedDirectoryDTO> getAllSavedDirectories() {
-        return dafService.getAllSavedDirectories().stream().map(savedDirectoryMapper::toDTO).toList();
+        return dafService.getAllSavedDirectories(false).stream().map(savedDirectoryMapper::toDTO).toList();
+    }
+
+    @GetMapping("/directories/asc")
+    public List<SavedDirectoryDTO> getAllSavedDirectoriesOrderByDateASC() {
+        return dafService.getAllSavedDirectories(true).stream().map(savedDirectoryMapper::toDTO).toList();
     }
 
     @GetMapping("/filesAndDirs/{id}")

@@ -10,6 +10,11 @@ import java.util.List;
 @Component
 public class SystemReader {
     public List<HeaderFile> getAllFilesInDirectory(String directoryName) {
+        //Обрезка лишних символов-разделителей
+        if (!directoryName.startsWith("/") && directoryName.endsWith("/")){
+            //Заменить все символы "/" в конце на "", то есть строка "/hello///" заменится на "/hello"
+            directoryName = directoryName.replaceAll("/+$", "");
+        }
         List<HeaderFile> files = new ArrayList<>();
         File directory = new File(directoryName);
 

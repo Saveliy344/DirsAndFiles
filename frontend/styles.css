@@ -74,3 +74,17 @@ button:hover {
     text-decoration: none;
     cursor: pointer;
 }
+
+.date {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    white-space: nowrap;
+}
+
+#sort {
+    font-size: 15px;
+    margin-left: 5px;
+    display: inline-block;
+    cursor: pointer;
+}
