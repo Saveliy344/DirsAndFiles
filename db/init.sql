@@ -1,5 +1,3 @@
--- Скрипт для создания таблиц в базе данных
-
 CREATE TABLE saved_directory (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,

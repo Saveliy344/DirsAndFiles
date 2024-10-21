@@ -1,11 +1,13 @@
 package ru.guryanov.daf.services;
 
+import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import ru.guryanov.daf.models.HeaderFile;
 import ru.guryanov.daf.models.SavedDirectory;
+import ru.guryanov.daf.repositories.HeaderFileRepository;
 import ru.guryanov.daf.repositories.SavedDirectoryRepository;
 import ru.guryanov.daf.utils.SystemReader;
 
@@ -17,11 +19,13 @@ import java.util.Optional;
 @Transactional
 public class DAFService {
     private final SavedDirectoryRepository savedDirectoryRepository;
+    private final HeaderFileRepository headerFileRepository;
     private final SystemReader systemReader;
 
     @Autowired
-    public DAFService(SavedDirectoryRepository savedDirectoryRepository, SystemReader systemReader) {
+    public DAFService(SavedDirectoryRepository savedDirectoryRepository, HeaderFileRepository headerFileRepository, SystemReader systemReader) {
         this.savedDirectoryRepository = savedDirectoryRepository;
+        this.headerFileRepository = headerFileRepository;
         this.systemReader = systemReader;
     }
 
@@ -38,10 +42,7 @@ public class DAFService {
 
     //Вернуть список файлов и директорий по id родительской директории
     public List<HeaderFile> getAllFilesAndDirsByDirId(Long id) {
-        SavedDirectory savedDirectory = savedDirectoryRepository.findById(id).orElse(null);
-        //Если не найдена директория с таким id, возвращаем null
-        if (savedDirectory == null) return new ArrayList<>();
-        return savedDirectory.getHeaderFiles();
+        return headerFileRepository.findByCustomQuery(id);
     }
 
 
