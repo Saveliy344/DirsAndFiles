@@ -11,7 +11,7 @@ CREATE TABLE header_file (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     size DECIMAL DEFAULT NULL,
-    is_dir Bool DEAFULT FALSE,
+    is_dir Bool DEFAULT FALSE,
     dir_id INT,
     FOREIGN KEY (dir_id) REFERENCES saved_directory(id) ON DELETE CASCADE
 );
