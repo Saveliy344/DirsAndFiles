@@ -48,8 +48,13 @@ public class DAFService {
     //Если успешно добавилась, вернётся true, иначе - false
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public boolean addDirectory(String directoryName) {
+        //Обрезка лишних символов-разделителей
+        if (directoryName.length() != 1 && directoryName.endsWith("/")){
+            //Заменить все символы "/" в конце на "", то есть строка "/hello///" заменится на "/hello"
+            directoryName = directoryName.replaceAll("/+$", "");
+        }
         try {
-            //Если в таблице уже есть директория, то удаляем, все связанные записи удалятся автоматически из-за каскадирования
+            //Если в таблице уже есть директория, то удаляем её, все связанные записи удалятся автоматически из-за каскадирования
             Optional<SavedDirectory> previousDirectory = savedDirectoryRepository.findByName(directoryName);
             previousDirectory.ifPresent(this::deleteDirectory);
 
