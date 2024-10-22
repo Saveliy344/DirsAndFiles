@@ -1,6 +1,7 @@
 package ru.guryanov.daf.services;
 
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import ru.guryanov.daf.repositories.HeaderFileRepository;
 import ru.guryanov.daf.repositories.SavedDirectoryRepository;
 import ru.guryanov.daf.utils.SystemReader;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +24,8 @@ public class DAFService {
     private final SavedDirectoryRepository savedDirectoryRepository;
     private final HeaderFileRepository headerFileRepository;
     private final SystemReader systemReader;
+    @Value("${base-directory}")
+    private String BASE;
 
     @Autowired
     public DAFService(SavedDirectoryRepository savedDirectoryRepository, HeaderFileRepository headerFileRepository, SystemReader systemReader) {
@@ -48,39 +53,40 @@ public class DAFService {
 
     //Если успешно добавилась, вернётся true, иначе - false
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public boolean addDirectory(String directoryName) {
-        //Обрезка лишних символов-разделителей
-        if (directoryName.length() != 1 && directoryName.endsWith("/")){
-            //Заменить все символы "/" в конце на "", то есть строка "/hello///" заменится на "/hello"
-            directoryName = directoryName.replaceAll("/+$", "");
+    public void addDirectory(String directoryName) {
+        System.out.println(BASE);
+        //Для добавления относительных путей
+        if (directoryName.startsWith(".")){
+            directoryName = BASE + "/" + directoryName;
         }
+        String CorrectPath = null;
         try {
-            //Если в таблице уже есть директория, то удаляем её, все связанные записи удалятся автоматически из-за каскадирования
-            Optional<SavedDirectory> previousDirectory = savedDirectoryRepository.findByName(directoryName);
-            previousDirectory.ifPresent(this::deleteDirectory);
-
-            List<HeaderFile> headerFiles = systemReader.getAllFilesInDirectory(directoryName);
-            int dirsCount = 0;
-            int filesCount = 0;
-            long sumFilesSize = 0;
-            SavedDirectory savedDirectory = new SavedDirectory();
-            savedDirectory.setName(directoryName);
-            for (HeaderFile headerFile : headerFiles) {
-                //Если это директория, то её размер равен нулю
-                if (headerFile.getIsDir()) dirsCount++;
-                else filesCount++;
-                sumFilesSize += headerFile.getSize();
-                headerFile.setSavedDirectory(savedDirectory);
-                savedDirectory.addHeaderFile(headerFile);
-            }
-            savedDirectory.setDirsCount(dirsCount);
-            savedDirectory.setFilesSize(sumFilesSize);
-            savedDirectory.setFilesCount(filesCount);
-            savedDirectoryRepository.save(savedDirectory);
-            return true;
-        } catch (Exception e) {
-            return false;
+            CorrectPath = systemReader.getCorrectPathToDirectory(directoryName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+        //Если в таблице уже есть директория, то удаляем её, все связанные записи удалятся автоматически из-за каскадирования
+        Optional<SavedDirectory> previousDirectory = savedDirectoryRepository.findByName(CorrectPath);
+        previousDirectory.ifPresent(this::deleteDirectory);
+
+        List<HeaderFile> headerFiles = systemReader.getAllFilesInDirectory(CorrectPath);
+        int dirsCount = 0;
+        int filesCount = 0;
+        long sumFilesSize = 0;
+        SavedDirectory savedDirectory = new SavedDirectory();
+        savedDirectory.setName(CorrectPath);
+        for (HeaderFile headerFile : headerFiles) {
+            //Если это директория, то её размер равен нулю
+            if (headerFile.getIsDir()) dirsCount++;
+            else filesCount++;
+            sumFilesSize += headerFile.getSize();
+            headerFile.setSavedDirectory(savedDirectory);
+            savedDirectory.addHeaderFile(headerFile);
+        }
+        savedDirectory.setDirsCount(dirsCount);
+        savedDirectory.setFilesSize(sumFilesSize);
+        savedDirectory.setFilesCount(filesCount);
+        savedDirectoryRepository.save(savedDirectory);
     }
 
 }

@@ -1,6 +1,7 @@
 package ru.guryanov.daf.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.guryanov.daf.dto.HeaderFileDTO;
@@ -42,12 +43,15 @@ public class DAFController {
     }
 
     @PostMapping("/addDirectory")
-    public ResponseEntity<Void> addDirectory(@RequestBody DirectoryRequest request) {
-        boolean isAdded = dafService.addDirectory(request.getName());
-        if (isAdded) {
+    public ResponseEntity<String> addDirectory(@RequestBody DirectoryRequest request) {
+        try {
+            dafService.addDirectory(request.getName());
             return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(500).build();
+        }
+        catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
         }
     }
 }

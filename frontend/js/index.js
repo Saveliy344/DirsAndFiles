@@ -143,17 +143,20 @@ document.getElementById("addBtn").addEventListener("click", function() {
                 loadDirectories();
                 document.getElementById("directory").value = "";
             } else {
-                throw new Error('Ошибка при добавлении директории');
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
             }
         })
         .catch(error => {
             console.error('Ошибка:', error);
-            alert('Не удалось добавить директорию');
+            alert('Не удалось добавить директорию: ' + error.message);
         });
     } else {
         alert("Введите название директории");
     }
 });
+
 
 document.getElementById("close").addEventListener("click", function(){
     closeDialog();

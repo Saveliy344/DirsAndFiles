@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.guryanov.daf.models.HeaderFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,13 +12,22 @@ import java.util.List;
 public class SystemReader {
     public List<HeaderFile> getAllFilesInDirectory(String directoryName) {
         List<HeaderFile> files = new ArrayList<>();
-        File directory = new File(directoryName);
-
-        if (directory.exists() && directory.isDirectory()) {
-            traverseDirectory(directory, files);
+        File file = new File(directoryName);
+        if (file.exists() && file.isDirectory()) {
+            traverseDirectory(file, files);
         } else throw new RuntimeException("Not found");
 
         return files;
+    }
+
+    /*Нужно, чтобы директория добавлялась в таблицу в нормальном виде
+    Например, если указать имя директории как /opt//////directory//
+    То добавится /opt/directory
+     */
+    public String getCorrectPathToDirectory(String directoryName) throws IOException {
+        File file = new File(directoryName);
+        if (!file.exists()) throw new RuntimeException("Not found");
+        return file.getCanonicalPath();
     }
 
     private void traverseDirectory(File dir, List<HeaderFile> files) {
@@ -34,7 +44,8 @@ public class SystemReader {
                     headerFile.setIsDir(true);
                     files.add(headerFile);
                 } else {
-                    headerFile.setSize(file.length());  // Если это файл, заполняем его размер
+                    // Если это файл, заполняем его размер
+                    headerFile.setSize(file.length());
                     files.add(headerFile);
                 }
             }
