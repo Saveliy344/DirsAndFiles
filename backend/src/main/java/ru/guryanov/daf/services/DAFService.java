@@ -50,11 +50,9 @@ public class DAFService {
         return headerFileRepository.findByCustomQuery(id);
     }
 
-
     //Если успешно добавилась, вернётся true, иначе - false
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public void addDirectory(String directoryName) {
-        System.out.println(BASE);
+    public SavedDirectory addDirectory(String directoryName) {
         //Для добавления относительных путей
         if (directoryName.startsWith(".")){
             directoryName = BASE + "/" + directoryName;
@@ -87,6 +85,12 @@ public class DAFService {
         savedDirectory.setFilesSize(sumFilesSize);
         savedDirectory.setFilesCount(filesCount);
         savedDirectoryRepository.save(savedDirectory);
+        return savedDirectory;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void deleteSavedDirectory(SavedDirectory savedDirectory){
+        savedDirectoryRepository.delete(savedDirectory);
     }
 
 }
