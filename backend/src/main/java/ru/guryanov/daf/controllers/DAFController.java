@@ -1,6 +1,7 @@
 package ru.guryanov.daf.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,11 @@ public class DAFController {
         try {
             dafService.addDirectory(request.getName());
             return ResponseEntity.ok().build();
+        }
+        catch (CannotAcquireLockException e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Таблица изменяется другой транзакцией!");
         }
         catch (Exception e){
             return ResponseEntity

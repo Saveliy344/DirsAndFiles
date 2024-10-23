@@ -26,6 +26,8 @@ public class DAFService {
     private final SystemReader systemReader;
     @Value("${base-directory}")
     private String BASE;
+    @Value("${home-directory}")
+    private String HOME;
 
     @Autowired
     public DAFService(SavedDirectoryRepository savedDirectoryRepository, HeaderFileRepository headerFileRepository, SystemReader systemReader) {
@@ -50,29 +52,33 @@ public class DAFService {
         return headerFileRepository.findByCustomQuery(id);
     }
 
-    //Если успешно добавилась, вернётся true, иначе - false
+
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public SavedDirectory addDirectory(String directoryName) {
+        //Для добавления домашней директории
+        if (directoryName.equals("~")){
+            directoryName = HOME;
+        }
         //Для добавления относительных путей
         if (directoryName.startsWith(".")){
             directoryName = BASE + "/" + directoryName;
         }
-        String CorrectPath = null;
+        String correctPath = null;
         try {
-            CorrectPath = systemReader.getCorrectPathToDirectory(directoryName);
+            correctPath = systemReader.getCorrectPathToDirectory(directoryName);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         //Если в таблице уже есть директория, то удаляем её, все связанные записи удалятся автоматически из-за каскадирования
-        Optional<SavedDirectory> previousDirectory = savedDirectoryRepository.findByName(CorrectPath);
+        Optional<SavedDirectory> previousDirectory = savedDirectoryRepository.findByName(correctPath);
         previousDirectory.ifPresent(this::deleteDirectory);
 
-        List<HeaderFile> headerFiles = systemReader.getAllFilesInDirectory(CorrectPath);
+        List<HeaderFile> headerFiles = systemReader.getAllFilesInDirectory(correctPath);
         int dirsCount = 0;
         int filesCount = 0;
         long sumFilesSize = 0;
         SavedDirectory savedDirectory = new SavedDirectory();
-        savedDirectory.setName(CorrectPath);
+        savedDirectory.setName(correctPath);
         for (HeaderFile headerFile : headerFiles) {
             //Если это директория, то её размер равен нулю
             if (headerFile.getIsDir()) dirsCount++;
